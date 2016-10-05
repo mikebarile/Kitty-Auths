@@ -1,4 +1,15 @@
 class CatsController < ApplicationController
+  before_action :check_user_id, only: [:edit, :update]
+
+  def check_user_id
+    if current_user.nil?
+      redirect_to cats_url
+      return
+    end
+    cat = current_user.cats.find(params[:id])
+    redirect_to cats_url unless current_user.id == cat.user_id
+  end
+
   def index
     @cats = Cat.all
     render :index
@@ -15,7 +26,12 @@ class CatsController < ApplicationController
   end
 
   def create
-    @cat = Cat.new(cat_params)
+    if current_user.nil?
+      redirect_to cats_url
+      return
+    end
+    all_params = cat_params.merge({user_id: current_user.id})
+    @cat = Cat.new(all_params)
     if @cat.save
       redirect_to cat_url(@cat)
     else
@@ -25,12 +41,12 @@ class CatsController < ApplicationController
   end
 
   def edit
-    @cat = Cat.find(params[:id])
+    @cat = current_user.cats.find(params[:id])
     render :edit
   end
 
   def update
-    @cat = Cat.find(params[:id])
+    @cat = current_user.cats.find(params[:id])
     if @cat.update_attributes(cat_params)
       redirect_to cat_url(@cat)
     else

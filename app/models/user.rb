@@ -30,4 +30,9 @@ class User < ActiveRecord::Base
     user && user.is_password?(password) ? user : nil
   end
 
+  has_many :cats,
+  primary_key: :id,
+  foreign_key: :user_id,
+  class_name: :Cat
+
 end
