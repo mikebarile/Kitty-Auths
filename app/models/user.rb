@@ -35,4 +35,6 @@ class User < ActiveRecord::Base
   foreign_key: :user_id,
   class_name: :Cat
 
+  has_many :cat_rental_requests
+
 end
