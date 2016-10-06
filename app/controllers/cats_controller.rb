@@ -7,7 +7,7 @@ class CatsController < ApplicationController
       return
     end
     cat = current_user.cats.find(params[:id])
-    redirect_to cats_url unless current_user.id == cat.user_id
+    redirect_to cat_url(cat) unless current_user.id == cat.user_id
   end
 
   def index

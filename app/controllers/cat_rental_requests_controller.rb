@@ -1,4 +1,15 @@
 class CatRentalRequestsController < ApplicationController
+  before_action :check_user_id, only: [:approve, :deny]
+
+  def check_user_id
+    if current_user.nil?
+      redirect_to cats_url
+      return
+    end
+    cat = CatRentalRequest.find(params[:id]).cat
+    redirect_to cat_url(cat) unless current_user.id == cat.user_id
+  end
+
   def approve
     current_cat_rental_request.approve!
     redirect_to cat_url(current_cat)
